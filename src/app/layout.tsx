@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "GradEd",
   description: "Empowering Students, One Grad at a Time.",
+  icons: {
+    icon: "/favicons/favicon.ico",
+    shortcut: "/favicons/logo.png",
+    apple: "/favicons/logo.png",
+  },
 };
 
 export default function RootLayout({
