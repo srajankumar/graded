@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useAuth } from "@clerk/nextjs";
 import Logout from "@/components/Logout";
 
 interface Question {
@@ -19,6 +20,7 @@ interface Test {
 
 const TakeTestPage = () => {
   const supabase = createClient();
+  const { userId } = useAuth();
   const [tests, setTests] = useState<Test[]>([]);
   const [selectedTest, setSelectedTest] = useState<Test | null>(null);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
@@ -49,8 +51,19 @@ const TakeTestPage = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Process the answers here, e.g., save them to the database or calculate the score.
-    console.log("Submitted answers:", answers);
+    const { data, error } = await supabase.from("student_answers").insert([
+      {
+        userId: userId,
+        testId: selectedTest?.id,
+        answers: answers,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error submitting answers:", error.message);
+    } else {
+      console.log("Answers submitted successfully:", data);
+    }
   };
 
   return (

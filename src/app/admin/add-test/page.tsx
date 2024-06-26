@@ -2,27 +2,29 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
 import Logout from "@/components/Logout";
 
 interface Question {
   question: string;
   options: string[];
+  correctAnswer: number; // Index of the correct answer
 }
 
 const CreateTestPage = () => {
   const supabase = createClient();
-  const router = useRouter();
 
   const [testTitle, setTestTitle] = useState<string>("");
   const [moduleName, setModuleName] = useState<string>("");
   const [moduleNumber, setModuleNumber] = useState<number>(0);
   const [questions, setQuestions] = useState<Question[]>([
-    { question: "", options: ["", "", "", ""] },
+    { question: "", options: ["", "", "", ""], correctAnswer: 0 },
   ]);
 
   const handleAddQuestion = () => {
-    setQuestions([...questions, { question: "", options: ["", "", "", ""] }]);
+    setQuestions([
+      ...questions,
+      { question: "", options: ["", "", "", ""], correctAnswer: 0 },
+    ]);
   };
 
   const handleInputChange = (
@@ -32,9 +34,11 @@ const CreateTestPage = () => {
     const values = [...questions];
     if (event.target.name === "question") {
       values[index].question = event.target.value;
-    } else {
+    } else if (event.target.name.startsWith("option-")) {
       const optionIndex = parseInt(event.target.name.split("-")[1], 10);
       values[index].options[optionIndex] = event.target.value;
+    } else if (event.target.name === "correctAnswer") {
+      values[index].correctAnswer = parseInt(event.target.value, 10);
     }
     setQuestions(values);
   };
@@ -54,7 +58,6 @@ const CreateTestPage = () => {
       console.error("Error creating test:", error.message);
     } else {
       console.log("Test created successfully:", data);
-      router.push("/teacher");
     }
   };
 
@@ -114,6 +117,18 @@ const CreateTestPage = () => {
                 />
               </label>
             ))}
+            <br />
+            <label>
+              Correct Answer (0-3):
+              <input
+                type="number"
+                name="correctAnswer"
+                min="0"
+                max="3"
+                value={question.correctAnswer}
+                onChange={(e) => handleInputChange(index, e)}
+              />
+            </label>
             <br />
           </div>
         ))}
