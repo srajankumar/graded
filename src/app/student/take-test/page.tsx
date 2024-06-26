@@ -24,6 +24,7 @@ const TakeTestPage = () => {
   const [tests, setTests] = useState<Test[]>([]);
   const [selectedTest, setSelectedTest] = useState<Test | null>(null);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
+  const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
     const fetchTests = async () => {
@@ -39,8 +40,11 @@ const TakeTestPage = () => {
   }, [supabase]);
 
   const handleSelectTest = (test: Test) => {
+    // Shuffle questions upon test selection
+    const shuffledTestQuestions = [...test.questions].sort(() => Math.random() - 0.5);
     setSelectedTest(test);
-    setAnswers(new Array(test.questions.length).fill(null));
+    setAnswers(new Array(shuffledTestQuestions.length).fill(null));
+    setShuffledQuestions(shuffledTestQuestions);
   };
 
   const handleAnswerChange = (questionIndex: number, answerIndex: number) => {
@@ -82,7 +86,7 @@ const TakeTestPage = () => {
       ) : (
         <form onSubmit={handleSubmit}>
           <h2>{selectedTest.title}</h2>
-          {selectedTest.questions.map((question, questionIndex) => (
+          {shuffledQuestions.map((question, questionIndex) => (
             <div key={questionIndex}>
               <p>{question.question}</p>
               {question.options.map((option, optionIndex) => (
@@ -92,9 +96,7 @@ const TakeTestPage = () => {
                     name={`question-${questionIndex}`}
                     value={optionIndex}
                     checked={answers[questionIndex] === optionIndex}
-                    onChange={() =>
-                      handleAnswerChange(questionIndex, optionIndex)
-                    }
+                    onChange={() => handleAnswerChange(questionIndex, optionIndex)}
                   />
                   {option}
                 </label>
