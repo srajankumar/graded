@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Navbar from "@/components/Navbar";
-import StudentScoresPieChart from "@/components/StudentScoresPieChart"; // Adjust the path as necessary
+import CorrectIncorrectPieChart from "@/components/CorrectIncorrectPieChart"; // Adjust the path as necessary
 
 interface StudentResult {
   userId: string;
@@ -82,64 +82,66 @@ const AdminDashboardPage = () => {
     return student ? student.email : "Unknown";
   };
 
-  const getStudentScores = (userId: string) => {
+  const getCorrectIncorrectCounts = (userId: string) => {
     const studentResultsFiltered = studentResults.filter(
       (result) => result.userId === userId
     );
-    return studentResultsFiltered.map((result) => {
-      const test = tests.find((test) => test.id === result.testId);
-      if (!test) return { testTitle: "Unknown", score: 0 };
-      const score = calculateScore(test, result.answers);
-      return { testTitle: test.title, score };
-    });
-  };
+    let correct = 0;
+    let incorrect = 0;
 
-  const calculateScore = (test: Test, answers: number[]) => {
-    return answers.reduce((score, answer, index) => {
-      return score + (answer === test.questions[index].correctAnswer ? 1 : 0);
-    }, 0);
+    studentResultsFiltered.forEach((result) => {
+      const test = tests.find((test) => test.id === result.testId);
+      if (test) {
+        result.answers.forEach((answer, index) => {
+          if (answer === test.questions[index].correctAnswer) {
+            correct++;
+          } else {
+            incorrect++;
+          }
+        });
+      }
+    });
+
+    return { correct, incorrect };
   };
 
   return (
     <div>
-      <Navbar />
-      <div className="max-w-5xl pt-5 px-5 pb-20 mx-auto">
+      <div className="pt-5">
         <table>
           <thead>
             <tr>
               <th>Student First Name</th>
               <th>Student Email</th>
               <th>Tests Given</th>
-              <th>Scores</th>
-              <th>Score Chart</th>
+              <th>Correct vs Incorrect Answers</th>
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
-              <tr key={student.userId}>
-                <td>{student.firstName}</td>
-                <td>{student.email}</td>
-                <td>
-                  {getStudentScores(student.userId).map((score, index) => (
-                    <div key={index}>
-                      <p>{score.testTitle}</p>
-                    </div>
-                  ))}
-                </td>
-                <td>
-                  {getStudentScores(student.userId).map((score, index) => (
-                    <div key={index}>
-                      <p>{score.score}</p>
-                    </div>
-                  ))}
-                </td>
-                <td>
-                  <StudentScoresPieChart
-                    scores={getStudentScores(student.userId)}
-                  />
-                </td>
-              </tr>
-            ))}
+            {students.map((student) => {
+              const { correct, incorrect } = getCorrectIncorrectCounts(
+                student.userId
+              );
+              return (
+                <tr key={student.userId}>
+                  <td>{student.firstName}</td>
+                  <td>{student.email}</td>
+                  <td>
+                    {
+                      studentResults.filter(
+                        (result) => result.userId === student.userId
+                      ).length
+                    }
+                  </td>
+                  <td>
+                    <CorrectIncorrectPieChart
+                      correct={correct}
+                      incorrect={incorrect}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -4,7 +4,8 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Navbar from "@/components/Navbar";
-import StudentScoresPieChart from "@/components/StudentScoresPieChart"; // Adjust the path as necessary
+import OverallCorrectIncorrectPieChart from "@/components/OverallCorrectIncorrectPieChart"; // Adjust the path as necessary
+import OverallTestPerformance from "@/components/OverallTestPerformance"; // Adjust the path as necessary
 
 interface StudentResult {
   userId: string;
@@ -30,11 +31,13 @@ interface Student {
   email: string;
 }
 
-const AdminDashboardPage = () => {
+const New = () => {
   const supabase = createClient();
   const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
   const [tests, setTests] = useState<Test[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectCount, setIncorrectCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +67,26 @@ const AdminDashboardPage = () => {
           })
         );
         setStudents(studentData as Student[]);
+
+        // Calculate overall correct and incorrect counts
+        let overallCorrect = 0;
+        let overallIncorrect = 0;
+
+        results.forEach((result: StudentResult) => {
+          const test = tests.find((test: any) => test.id === result.testId);
+          if (test) {
+            result.answers.forEach((answer, index) => {
+              if (answer === test.questions[index].correctAnswer) {
+                overallCorrect++;
+              } else {
+                overallIncorrect++;
+              }
+            });
+          }
+        });
+
+        setCorrectCount(overallCorrect);
+        setIncorrectCount(overallIncorrect);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -72,46 +95,33 @@ const AdminDashboardPage = () => {
     fetchData();
   }, [supabase]);
 
-  const getStudentFirstName = (userId: string) => {
-    const student = students.find((student) => student.userId === userId);
-    return student ? student.firstName : "Unknown";
-  };
-
-  const getStudentEmail = (userId: string) => {
-    const student = students.find((student) => student.userId === userId);
-    return student ? student.email : "Unknown";
-  };
-
-  const getStudentScores = (userId: string) => {
-    const studentResultsFiltered = studentResults.filter(
-      (result) => result.userId === userId
-    );
-    return studentResultsFiltered.map((result) => {
-      const test = tests.find((test) => test.id === result.testId);
-      if (!test) return { testTitle: "Unknown", score: 0 };
-      const score = calculateScore(test, result.answers);
-      return { testTitle: test.title, score };
-    });
-  };
-
-  const calculateScore = (test: Test, answers: number[]) => {
-    return answers.reduce((score, answer, index) => {
-      return score + (answer === test.questions[index].correctAnswer ? 1 : 0);
-    }, 0);
-  };
-
   return (
     <div>
-      <Navbar />
-      <div className="max-w-5xl pt-5 px-5 pb-20 mx-auto">
-        <table>
+      <div className="pt-5">
+        <h1 className="text-2xl font-bold mb-5">Overall Analysis</h1>
+        <div className="mb-10">
+          <h2 className="text-xl font-bold mb-3">
+            Correct vs Incorrect Answers
+          </h2>
+          <div className="max-w-sm">
+            <OverallCorrectIncorrectPieChart
+              correct={correctCount}
+              incorrect={incorrectCount}
+            />
+          </div>
+        </div>
+        <div className="mb-10">
+          <OverallTestPerformance
+            tests={tests}
+            studentResults={studentResults}
+          />
+        </div>
+        <table className="w-full table-auto">
           <thead>
             <tr>
               <th>Student First Name</th>
               <th>Student Email</th>
               <th>Tests Given</th>
-              <th>Scores</th>
-              <th>Score Chart</th>
             </tr>
           </thead>
           <tbody>
@@ -120,23 +130,11 @@ const AdminDashboardPage = () => {
                 <td>{student.firstName}</td>
                 <td>{student.email}</td>
                 <td>
-                  {getStudentScores(student.userId).map((score, index) => (
-                    <div key={index}>
-                      <p>{score.testTitle}</p>
-                    </div>
-                  ))}
-                </td>
-                <td>
-                  {getStudentScores(student.userId).map((score, index) => (
-                    <div key={index}>
-                      <p>{score.score}</p>
-                    </div>
-                  ))}
-                </td>
-                <td>
-                  <StudentScoresPieChart
-                    scores={getStudentScores(student.userId)}
-                  />
+                  {
+                    studentResults.filter(
+                      (result) => result.userId === student.userId
+                    ).length
+                  }
                 </td>
               </tr>
             ))}
@@ -147,4 +145,4 @@ const AdminDashboardPage = () => {
   );
 };
 
-export default AdminDashboardPage;
+export default New;
