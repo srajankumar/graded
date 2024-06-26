@@ -1,111 +1,3 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { createClient } from "@/utils/supabase/client";
-// import Logout from "@/components/Logout";
-
-// interface StudentResult {
-//   userId: string;
-//   testId: number;
-//   answers: number[];
-// }
-
-// interface Test {
-//   id: number;
-//   title: string;
-//   module_name: string;
-//   module_number: number;
-//   questions: { question: string; options: string[] }[];
-// }
-
-// const AdminResultsPage = () => {
-//   const supabase = createClient();
-//   const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
-//   const [tests, setTests] = useState<Test[]>([]);
-//   const [students, setStudents] = useState<{ userId: string; email: string }[]>(
-//     []
-//   );
-
-//   useEffect(() => {
-//     const fetchResults = async () => {
-//       const { data: results, error: resultsError } = await supabase
-//         .from("student_answers")
-//         .select("*");
-//       if (resultsError) {
-//         console.error("Error fetching results:", resultsError.message);
-//       } else {
-//         setStudentResults(results as StudentResult[]);
-//       }
-
-//       const { data: tests, error: testsError } = await supabase
-//         .from("tests")
-//         .select("*");
-//       if (testsError) {
-//         console.error("Error fetching tests:", testsError.message);
-//       } else {
-//         setTests(tests as Test[]);
-//       }
-
-//       const { data: students, error: studentsError } = await supabase
-//         .from("auth")
-//         .select("userId, userEmail");
-//       if (studentsError) {
-//         console.error("Error fetching students:", studentsError.message);
-//       } else {
-//         setStudents(students);
-//       }
-//     };
-
-//     fetchResults();
-//   }, [supabase]);
-
-//   const getStudentEmail = (userId: string) => {
-//     const student = students.find((student) => student.userId === userId);
-//     return student ? student.email : "Unknown";
-//   };
-
-//   const calculateScore = (test: Test, answers: number[]) => {
-//     // Assuming correct answers are the first option (index 0)
-//     return answers.reduce((score, answer, index) => {
-//       return score + (answer === 0 ? 1 : 0);
-//     }, 0);
-//   };
-
-//   return (
-//     <div>
-//       <Logout />
-//       <h1>Student Results</h1>
-//       <table>
-//         <thead>
-//           <tr>
-//             <th>Student</th>
-//             <th>Test</th>
-//             <th>Module</th>
-//             <th>Score</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {studentResults.map((result) => {
-//             const test = tests.find((test) => test.id === result.testId);
-//             if (!test) return null;
-//             const score = calculateScore(test, result.answers);
-//             return (
-//               <tr key={`${result.userId}-${result.testId}`}>
-//                 <td>{getStudentEmail(result.userId)}</td>
-//                 <td>{test.title}</td>
-//                 <td>{test.module_name}</td>
-//                 <td>{score}</td>
-//               </tr>
-//             );
-//           })}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default AdminResultsPage;
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -123,7 +15,11 @@ interface Test {
   title: string;
   module_name: string;
   module_number: number;
-  questions: { question: string; options: string[] }[];
+  questions: {
+    correctAnswer: number;
+    question: string;
+    options: string[];
+  }[];
 }
 
 interface Student {
