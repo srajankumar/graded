@@ -66,16 +66,21 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { useAuth } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import Logout from "@/components/Logout";
 
 const Page = () => {
   const supabase = createClient();
   const { userId } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
     const sendData = async () => {
       try {
+        // Extract the email address
+        const emailAddress = user?.emailAddresses?.[0]?.emailAddress || "";
+
         // Check if the userId already exists in the auth table
         const { data: existingUser, error: fetchError } = await supabase
           .from("auth")
@@ -93,6 +98,7 @@ const Page = () => {
           const { data, error } = await supabase.from("auth").insert([
             {
               userId: userId,
+              userEmail: emailAddress,
               admin: false,
             },
           ]);
