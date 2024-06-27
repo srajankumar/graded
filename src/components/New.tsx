@@ -97,26 +97,24 @@ const New = () => {
 
   return (
     <div>
-      <div className="pt-5">
-        <h1 className="text-2xl font-bold mb-5">Overall Analysis</h1>
-        <div className="mb-10">
-          <h2 className="text-xl font-bold mb-3">
-            Correct vs Incorrect Answers
-          </h2>
-          <div className="max-w-sm">
-            <OverallCorrectIncorrectPieChart
-              correct={correctCount}
-              incorrect={incorrectCount}
-            />
-          </div>
-        </div>
+      <div className="grid md:grid-cols-2">
         <div className="mb-10">
           <OverallTestPerformance
             tests={tests}
             studentResults={studentResults}
           />
         </div>
-        <table className="w-full table-auto">
+        <div className="flex md:justify-end justify-center items-center">
+          <div className="max-w-sm md:pr-10">
+            <OverallCorrectIncorrectPieChart
+              correct={correctCount}
+              incorrect={incorrectCount}
+            />
+          </div>
+        </div>
+      </div>
+      {/*<div className="pt-5">
+         <table className="w-full table-auto">
           <thead>
             <tr>
               <th>Student First Name</th>
@@ -139,8 +137,8 @@ const New = () => {
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </table> 
+      </div>*/}
     </div>
   );
 };

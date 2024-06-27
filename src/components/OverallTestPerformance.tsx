@@ -1,5 +1,15 @@
 // OverallTestPerformance.tsx
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Test {
   id: number;
@@ -53,35 +63,29 @@ const OverallTestPerformance: React.FC<OverallTestPerformanceProps> = ({
   }, averageScores[0]);
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-3">Test Performance Overview</h2>
-      <table className="w-full table-auto">
-        <thead>
-          <tr>
-            <th>Test Title</th>
-            <th>Average Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {averageScores.map((test) => (
-            <tr
-              key={test.testId}
-              className={
-                test.testId === lowestScoreTest.testId ? "bg-red-100" : ""
-              }
-            >
-              <td>{test.testTitle}</td>
-              <td>{test.averageScore.toFixed(2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="mt-5">
-        <h3 className="text-lg font-bold">Lowest Scoring Test</h3>
-        <p>
-          {lowestScoreTest?.testTitle} with an average score of{" "}
-          {lowestScoreTest?.averageScore.toFixed(2)}
-        </p>
+    <div className="mt-5 border px-5 py-3 pb-7 rounded-xl">
+      <ScrollArea className="h-[25rem] w-full">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Average</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {averageScores.map((test) => (
+              <TableRow key={test.testId}>
+                <TableCell className="font-medium">{test.testTitle}</TableCell>
+                <TableCell>{test.averageScore.toFixed(2)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </ScrollArea>
+      <div className="text-sm pt-5 tracking-wide text-destructive">
+        {lowestScoreTest?.testTitle} has the lowest average score of{" "}
+        {lowestScoreTest?.averageScore.toFixed(2)}
       </div>
     </div>
   );

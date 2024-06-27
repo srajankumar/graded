@@ -10,16 +10,8 @@ const page = () => {
     <div>
       <Navbar />
       <div className="max-w-5xl mx-auto px-5">
-        <div className="flex gap-5">
-          <Link href="/admin/add-test">
-            <Button>Add Test</Button>
-          </Link>
-          <Link href="/admin/test-result">
-            <Button>See Results</Button>
-          </Link>
-        </div>
-        <div>
-          <CorrectIncorrect />
+        <div className="text-3xl py-5">Hello Educator 👋</div>
+        <div className="pb-16">
           <New />
         </div>
       </div>

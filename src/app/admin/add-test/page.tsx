@@ -248,7 +248,7 @@ const AddTest = () => {
       <Navbar />
       <div className="max-w-5xl pt-5 px-5 pb-20 mx-auto">
         <div className="flex flex-col gap-5">
-          <h1 className="text-xl">Create a Test</h1>
+          <div className="text-3xl pb-5">Student Performance</div>
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             <div>
               <Label htmlFor="title">Title</Label>

@@ -5,6 +5,15 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Navbar from "@/components/Navbar";
 import StudentScoresPieChart from "@/components/StudentScoresPieChart"; // Adjust the path as necessary
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface StudentResult {
   userId: string;
@@ -103,45 +112,50 @@ const AdminDashboardPage = () => {
   return (
     <div>
       <Navbar />
-      <div className="max-w-5xl pt-5 px-5 pb-20 mx-auto">
-        <table>
-          <thead>
-            <tr>
-              <th>Student First Name</th>
-              <th>Student Email</th>
-              <th>Tests Given</th>
-              <th>Scores</th>
-              <th>Score Chart</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="max-w-5xl px-5 pb-20 mx-auto">
+        <div className="text-3xl py-5 pb-10">Student Performance</div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>First Name</TableHead>
+              <TableHead>Email</TableHead>
+              {/* <TableHead>Tests Given</TableHead>
+              <TableHead>Scores</TableHead> */}
+              <TableHead>Scores</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {students.map((student) => (
-              <tr key={student.userId}>
-                <td>{student.firstName}</td>
-                <td>{student.email}</td>
-                <td>
+              <TableRow>
+                <TableCell className="font-medium">
+                  {student.firstName}
+                </TableCell>
+                <TableCell>{student.email}</TableCell>
+                {/* <TableCell>
                   {getStudentScores(student.userId).map((score, index) => (
                     <div key={index}>
                       <p>{score.testTitle}</p>
                     </div>
                   ))}
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   {getStudentScores(student.userId).map((score, index) => (
                     <div key={index}>
                       <p>{score.score}</p>
                     </div>
                   ))}
-                </td>
-                <td>
-                  <StudentScoresPieChart
-                    scores={getStudentScores(student.userId)}
-                  />
-                </td>
-              </tr>
+                </TableCell> */}
+                <TableCell className="flex justify-center items-center">
+                  <div className="w-80 h-80">
+                    <StudentScoresPieChart
+                      scores={getStudentScores(student.userId)}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
