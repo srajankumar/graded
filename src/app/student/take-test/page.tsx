@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useAuth } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface Question {
   question: string;
@@ -21,6 +22,7 @@ interface Test {
   title: string;
   module_name: string;
   module_number: number;
+  test_duration: number;
   questions: Question[];
 }
 
@@ -33,6 +35,8 @@ const TakeTestPage = () => {
   const [selectedTest, setSelectedTest] = useState<Test | null>(null);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
   const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
+  const [timer, setTimer] = useState<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
 
@@ -49,13 +53,44 @@ const TakeTestPage = () => {
     fetchTests();
   }, [supabase]);
 
-  const handleSelectTest = (test: Test) => {
+  useEffect(() => {
+    if (timer !== null && timer > 0) {
+      timerRef.current = setInterval(() => {
+        setTimer((prevTimer) => (prevTimer !== null ? prevTimer - 1 : null));
+      }, 1000);
+    } else if (timer === 0) {
+      clearInterval(timerRef.current!);
+      handleSubmit();
+    }
+
+    return () => clearInterval(timerRef.current!);
+  }, [timer]);
+
+  const handleSelectTest = async (test: Test) => {
+    // Check if the user has already taken the test
+    const { data: existingAnswers, error: existingError } = await supabase
+      .from("student_answers")
+      .select("id")
+      .eq("userId", userId)
+      .eq("testId", test.id);
+
+    if (existingError) {
+      console.error("Error checking existing answers:", existingError.message);
+      return;
+    }
+
+    if (existingAnswers.length > 0) {
+      toast.info("You have already taken this test.");
+      return;
+    }
+
     const shuffledTestQuestions = [...test.questions].sort(
       () => Math.random() - 0.5
     );
     setSelectedTest(test);
     setAnswers(new Array(shuffledTestQuestions.length).fill(null));
     setShuffledQuestions(shuffledTestQuestions);
+    setTimer(test.test_duration * 60); // Set timer in seconds
   };
 
   const handleAnswerChange = (questionIndex: number, answerIndex: number) => {
@@ -118,6 +153,12 @@ const TakeTestPage = () => {
                   {selectedTest.module_name}
                 </div>
                 <div className="text-3xl">{selectedTest.title}</div>
+                {timer !== null && (
+                  <div className="text-destructive pt-2">
+                    Time Remaining: {Math.floor(timer / 60)}:
+                    {String(timer % 60).padStart(2, "0")}
+                  </div>
+                )}
               </div>
               {shuffledQuestions.map((question, questionIndex) => (
                 <div key={questionIndex} className="mb-10">
