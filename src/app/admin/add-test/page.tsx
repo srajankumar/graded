@@ -96,13 +96,14 @@ const AddTest = () => {
             <div className="grid gap-2">
               <Label htmlFor="title">Title</Label>
               <Input
+                placeholder="Software Engineering Assignment"
                 required
                 type="text"
                 value={testTitle}
                 onChange={(e) => setTestTitle(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-5 gap-5">
+            <div className="grid md:grid-cols-5 gap-5">
               <div className="col-span-2 grid gap-2">
                 <Label htmlFor="module_number">Module Number</Label>
                 <Input
@@ -117,14 +118,15 @@ const AddTest = () => {
               <div className="col-span-2 grid gap-2">
                 <Label htmlFor="module_name">Module Name</Label>
                 <Input
+                  placeholder="Project Management"
                   required
                   type="text"
                   value={moduleName}
                   onChange={(e) => setModuleName(e.target.value)}
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="test_duration">Test Duration (minutes)</Label>
+              <div className="grid md:col-span-1 col-span-2 gap-2">
+                <Label htmlFor="test_duration">Test Duration (min)</Label>
                 <Input
                   required
                   type="number"
@@ -136,7 +138,7 @@ const AddTest = () => {
               </div>
             </div>
             {questions.map((question, index) => (
-              <div className="flex flex-col gap-5 border-b-2 pb-10" key={index}>
+              <div className="flex flex-col gap-5 pb-5" key={index}>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="question" className="text-lg">
                     Question {index + 1}

@@ -31,7 +31,7 @@ interface Student {
   email: string;
 }
 
-const New = () => {
+const AdminDashboard = () => {
   const supabase = createClient();
   const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
   const [tests, setTests] = useState<Test[]>([]);
@@ -97,13 +97,8 @@ const New = () => {
 
   return (
     <div>
-      <div className="grid md:grid-cols-2">
-        <div className="mb-10">
-          <OverallTestPerformance
-            tests={tests}
-            studentResults={studentResults}
-          />
-        </div>
+      <div className="grid md:gap-0 gap-20 md:grid-cols-2">
+        <OverallTestPerformance tests={tests} studentResults={studentResults} />
         <div className="flex md:justify-end justify-center items-center">
           <div className="max-w-sm md:pr-10">
             <OverallCorrectIncorrectPieChart
@@ -117,4 +112,4 @@ const New = () => {
   );
 };
 
-export default New;
+export default AdminDashboard;

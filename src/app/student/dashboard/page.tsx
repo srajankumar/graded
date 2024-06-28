@@ -3,7 +3,6 @@ import CorrectIncorrect from "@/components/CorrectIncorrect";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
-import New from "@/components/New";
 import StudentDashboard from "@/components/StudentDashboard";
 
 const page = () => {

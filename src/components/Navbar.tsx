@@ -96,6 +96,21 @@ const Navbar = () => {
                   </Button>
                 </Link>
                 <Link
+                  href={isAdmin === true ? "/admin/notes" : "/student/notes"}
+                >
+                  <Button
+                    variant={
+                      pathname === "/admin/notes" ||
+                      pathname === "/student/notes"
+                        ? "default"
+                        : "ghost"
+                    }
+                    className="w-full"
+                  >
+                    {isAdmin === true ? "Add Notes" : "See Notes"}
+                  </Button>
+                </Link>
+                <Link
                   href={
                     isAdmin === true ? "/admin/add-test" : "/student/take-test"
                   }

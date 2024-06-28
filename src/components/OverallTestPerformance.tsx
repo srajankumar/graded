@@ -62,8 +62,8 @@ const OverallTestPerformance: React.FC<OverallTestPerformanceProps> = ({
   }, averageScores[0]);
 
   return (
-    <div className="mt-5 border px-5 py-3 pb-7 rounded-xl">
-      <ScrollArea className="h-[23rem] w-full">
+    <div className="border px-5 py-3 pb-7 rounded-xl">
+      <ScrollArea className="h-[16rem] w-full">
         <Table>
           <TableHeader>
             <TableRow>
