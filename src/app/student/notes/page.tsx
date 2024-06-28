@@ -75,7 +75,7 @@ const Notes: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <div className="bg-secondary border hover:scale-[101%] transition-all duration-200 flex md:flex-row flex-col rounded-xl md:h-40 p-5 gap-5">
+              <div className="bg-secondary border md:hover:scale-[101%] transition-all duration-200 flex md:flex-row flex-col rounded-xl md:h-40 p-5 gap-5">
                 <img
                   src={file.url}
                   alt="Preview not available"

@@ -101,7 +101,7 @@ const StudentDashboard = () => {
 
   return (
     <div>
-      <div className="grid md:grid-cols-2">
+      <div className="grid md:grid-cols-2 md:gap-0 gap-20">
         <div>
           {students.map((student) => (
             <div key={student.userId} className="flex flex-col gap-5">
@@ -123,7 +123,7 @@ const StudentDashboard = () => {
                 return (
                   <div
                     key={result.testId}
-                    className="bg-secondary p-4 border rounded-lg shadow-sm"
+                    className="bg-secondary md:hover:scale-[102%] transition-all duration-200 p-4 border rounded-lg shadow-sm"
                   >
                     <h4 className="text-md font-medium">{test.title}</h4>
                     <p>
