@@ -50,7 +50,7 @@ const Navbar = () => {
   }, [user, supabase]);
 
   return (
-    <nav className="flex bg-background fixed w-full top-0 left-1/2 transform -translate-x-1/2 max-w-5xl px-5 mx-auto py-10 justify-between items-center">
+    <nav className="flex z-50 bg-background fixed w-full top-0 left-1/2 transform -translate-x-1/2 max-w-5xl px-5 mx-auto py-10 justify-between items-center">
       <div className="flex justify-center items-center gap-3">
         <UserButton afterSignOutUrl="/" />
         <h1 className="font-medium">
@@ -112,25 +112,24 @@ const Navbar = () => {
                     {isAdmin === true ? "Add Test" : "Take Test"}
                   </Button>
                 </Link>
-                <Link
-                  href={
-                    isAdmin === true
-                      ? "/admin/test-result"
-                      : "/student/test-result"
-                  }
-                >
-                  <Button
-                    variant={
-                      pathname === "/admin/test-result" ||
-                      pathname === "/student/test-result"
-                        ? "default"
-                        : "ghost"
+                {isAdmin && (
+                  <Link
+                    href={
+                      isAdmin === true
+                        ? "/admin/test-result"
+                        : "/student/test-result"
                     }
-                    className="w-full"
                   >
-                    See Results
-                  </Button>
-                </Link>
+                    <Button
+                      variant={
+                        pathname === "/admin/test-result" ? "default" : "ghost"
+                      }
+                      className="w-full"
+                    >
+                      See Results
+                    </Button>
+                  </Link>
+                )}
               </div>
               <div className="absolute w-full bottom-5 pr-12">
                 <SignOutButton>

@@ -7,10 +7,10 @@ import New from "@/components/New";
 
 const page = () => {
   return (
-    <div>
+    <div className="py-20">
       <Navbar />
-      <div className="max-w-5xl mx-auto px-5">
-        <div className="text-3xl py-5">Hello Educator 👋</div>
+      <div className="max-w-5xl min-h-[100dvh] flex flex-col justify-center mx-auto px-5">
+        <div className="text-3xl pt-24 pb-20">Hello Educator 👋</div>
         <div className="pb-16">
           <New />
         </div>

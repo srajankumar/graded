@@ -1,4 +1,3 @@
-// AdminDashboardPage.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 
 interface StudentResult {
   userId: string;
@@ -44,6 +44,7 @@ const AdminDashboardPage = () => {
   const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
   const [tests, setTests] = useState<Test[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,42 +110,45 @@ const AdminDashboardPage = () => {
     }, 0);
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredStudents = students.filter((student) => {
+    const fullName = student.firstName.toLowerCase();
+    const email = student.email.toLowerCase();
+    const query = searchQuery.toLowerCase();
+    return fullName.includes(query) || email.includes(query);
+  });
+
   return (
-    <div>
+    <div className="p">
       <Navbar />
-      <div className="max-w-5xl px-5 pb-20 mx-auto">
-        <div className="text-3xl py-5 pb-10">Student Performance</div>
+      <div className="max-w-5xl mx-auto py-20 px-5">
+        <div className="text-3xl py-24 pb-20">Student Performance</div>
+        <div className="pb-10">
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search students by name"
+          />
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>First Name</TableHead>
               <TableHead>Email</TableHead>
-              {/* <TableHead>Tests Given</TableHead>
-              <TableHead>Scores</TableHead> */}
               <TableHead>Scores</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map((student) => (
-              <TableRow>
+            {filteredStudents.map((student) => (
+              <TableRow key={student.userId}>
                 <TableCell className="font-medium">
                   {student.firstName}
                 </TableCell>
                 <TableCell>{student.email}</TableCell>
-                {/* <TableCell>
-                  {getStudentScores(student.userId).map((score, index) => (
-                    <div key={index}>
-                      <p>{score.testTitle}</p>
-                    </div>
-                  ))}
-                </TableCell>
-                <TableCell>
-                  {getStudentScores(student.userId).map((score, index) => (
-                    <div key={index}>
-                      <p>{score.score}</p>
-                    </div>
-                  ))}
-                </TableCell> */}
                 <TableCell className="flex justify-center items-center">
                   <div className="w-80 h-80">
                     <StudentScoresPieChart

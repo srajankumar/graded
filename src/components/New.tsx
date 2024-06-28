@@ -113,32 +113,6 @@ const New = () => {
           </div>
         </div>
       </div>
-      {/*<div className="pt-5">
-         <table className="w-full table-auto">
-          <thead>
-            <tr>
-              <th>Student First Name</th>
-              <th>Student Email</th>
-              <th>Tests Given</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student) => (
-              <tr key={student.userId}>
-                <td>{student.firstName}</td>
-                <td>{student.email}</td>
-                <td>
-                  {
-                    studentResults.filter(
-                      (result) => result.userId === student.userId
-                    ).length
-                  }
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table> 
-      </div>*/}
     </div>
   );
 };
