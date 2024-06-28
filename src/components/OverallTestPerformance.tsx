@@ -1,4 +1,3 @@
-// OverallTestPerformance.tsx
 import React from "react";
 import {
   Table,
@@ -72,7 +71,6 @@ const OverallTestPerformance: React.FC<OverallTestPerformanceProps> = ({
               <TableHead>Average</TableHead>
             </TableRow>
           </TableHeader>
-
           <TableBody>
             {averageScores.map((test) => (
               <TableRow key={test.testId}>

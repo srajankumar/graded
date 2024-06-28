@@ -1,6 +1,8 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
 import Logout from "@/components/Logout";
+
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
@@ -24,6 +26,9 @@ const Navbar = () => {
   const { user } = useUser();
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const path = usePathname();
+  const pathname = path;
+
   useEffect(() => {
     const fetchAdminStatus = async () => {
       const { data, error } = await supabase
@@ -45,7 +50,7 @@ const Navbar = () => {
   }, [user, supabase]);
 
   return (
-    <nav className="flex max-w-5xl px-5 mx-auto py-10 justify-between items-center">
+    <nav className="flex bg-background fixed w-full top-0 left-1/2 transform -translate-x-1/2 max-w-5xl px-5 mx-auto py-10 justify-between items-center">
       <div className="flex justify-center items-center gap-3">
         <UserButton afterSignOutUrl="/" />
         <h1 className="font-medium">
@@ -72,20 +77,57 @@ const Navbar = () => {
               }
             </SheetDescription>
             <div className="w-full h-full flex flex-col justify-between">
-              {" "}
               <div className="pt-3 flex flex-col gap-5">
-                <Link href="/admin/dashboard">
-                  <Button variant={"secondary"} className="w-full">
+                <Link
+                  href={
+                    isAdmin === true ? "/admin/dashboard" : "/student/dashboard"
+                  }
+                >
+                  <Button
+                    variant={
+                      pathname === "/admin/dashboard" ||
+                      pathname === "/student/dashboard"
+                        ? "default"
+                        : "ghost"
+                    }
+                    className="w-full"
+                  >
                     Dashboard
                   </Button>
                 </Link>
-                <Link href="/admin/add-test">
-                  <Button variant={"secondary"} className="w-full">
-                    Add Test
+                <Link
+                  href={
+                    isAdmin === true ? "/admin/add-test" : "/student/take-test"
+                  }
+                >
+                  <Button
+                    variant={
+                      pathname === "/admin/add-test" ||
+                      pathname === "/student/take-test"
+                        ? "default"
+                        : "ghost"
+                    }
+                    className="w-full"
+                  >
+                    {isAdmin === true ? "Add Test" : "Take Test"}
                   </Button>
                 </Link>
-                <Link href="/admin/test-result">
-                  <Button variant={"secondary"} className="w-full">
+                <Link
+                  href={
+                    isAdmin === true
+                      ? "/admin/test-result"
+                      : "/student/test-result"
+                  }
+                >
+                  <Button
+                    variant={
+                      pathname === "/admin/test-result" ||
+                      pathname === "/student/test-result"
+                        ? "default"
+                        : "ghost"
+                    }
+                    className="w-full"
+                  >
                     See Results
                   </Button>
                 </Link>
